@@ -6,7 +6,7 @@
     <button @click="checkLogin">Check Login</button>
     <br>
 
-    <input type="text" v-model="inputText">
+    <textarea v-model="inputText" rows="4" cols="50"></textarea>
     <button @click="handleButtonClick">Submit</button>
   
     <br>
