@@ -118,7 +118,7 @@ export default {
             if (!getDefaultSession().info.isLoggedIn) {
                 await login({
                 oidcIssuer: "https://login.inrupt.com",
-                redirectUrl: new URL("/bara", window.location.href).toString(),
+                redirectUrl: new URL("/", window.location.href).toString(),
                 clientName: "My application"
                 });
             }
