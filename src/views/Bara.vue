@@ -5,6 +5,10 @@
     <br>
     <button @click="checkLogin">Check Login</button>
     <br>
+    <input type="date" v-model="selectedDate">
+    <br>
+    <p>選択された日付: {{ selectedDate }}</p>
+    <br>
 
     <textarea v-model="inputText" rows="4" cols="50"></textarea>
     <button @click="handleButtonClick">Submit</button>
@@ -68,8 +72,7 @@ export default {
 
     data() {
         return {
-            //ReadData :null,
-            //SaveData :null,
+            selectedDate: null,  // 選択された日付を保持するデータプロパティ
             inputText: '',
             PodUrl: '',
 
@@ -119,7 +122,8 @@ export default {
                 console.log(`Logged in as ${getDefaultSession().info.webId}`);
                 const pods=await getPodUrlAll(getDefaultSession().info.webId,{ fetch: fetch });
                 console.log(pods);
-                this.PodUrl=pods[0]+"kuwaDeaitxt/";
+                console.log(this.selectedDate);
+                this.PodUrl=pods[0]+"KuwaSchedule/"+this.selectedDate+"/";
             }
             else{
                 console.log(`not login`);
