@@ -226,6 +226,10 @@ export default {
             await handleIncomingRedirect();
         },
         async readTodoList() {
+            const pods=await getPodUrlAll(getDefaultSession().info.webId,{ fetch: fetch });
+            console.log(pods);
+            console.log(this.selectedDate);
+            this.PodUrl=pods[0]+"KuwaSchedule/"+this.selectedDate+"/";
 
             // Make authenticated requests by passing `fetch` to the solid-client functions.
             // The user must have logged in as someone with the appropriate access to the specified URL.
@@ -253,6 +257,10 @@ export default {
             //this.ReadData = myDataset;
         },
         async updateToDoList(myChangedDataset) {
+            const pods=await getPodUrlAll(getDefaultSession().info.webId,{ fetch: fetch });
+            console.log(pods);
+            console.log(this.selectedDate);
+            this.PodUrl=pods[0]+"KuwaSchedule/"+this.selectedDate+"/";
         // For simplicity and brevity, this tutorial hardcodes the  SolidDataset URL.
             // In practice, you should add in your profile a link to this resource
             // such that applications can follow to find your list.
