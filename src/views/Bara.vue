@@ -1,7 +1,6 @@
 <template>
     <div>
-    桑原
-    <button @click="startLogin">Login</button>
+    <button @click="startLogin">ログインボタン</button>
     <br>
     <button @click="checkLogin">Check Login 現在ログインできているか確認</button>
     <br>
@@ -11,17 +10,17 @@
     <br>
 
     <textarea v-model="inputText" rows="4" cols="50"></textarea>
-    <button @click="handleButtonClick">Submit データを記入する</button>
+    <button @click="handleButtonClick">予定を書き込む</button>
   
     <br>
 
-    <button @click="readTodoList">Read Todo List データを読み込む</button>
+    <button @click="readTodoList">予定を読み込む</button>
 
     <br>
     <textarea v-model="inputText2"></textarea>
-    <button @click="inputUserName">ユーザー名(アクセス許可を与えるユーザーも、データを読み込むユーザーもここで入力する)</button>
+    <button @click="inputUserName">ユーザー名を入力</button>
 
-    <button @click="readOtherUserData">他のユーザーのデータを読み込む</button>
+    <button @click="readOtherUserData">入力した他のユーザーのデータを読み込む</button>
 
     
 
@@ -31,15 +30,15 @@
     {{ReadData}}
     <br>
     <br>
-    <button @click="accessCheck">access check</button>
+    <button @click="accessCheck">データのアクセス情報を確認</button>
     <br>
-    <button @click="accessButton">access button</button>
+    <button @click="accessButton">入力したユーザーにのみアクセスを付与</button>
     <br>
-    <button @click="accessDeprivationButton">access deprivation button</button>
+    <button @click="accessDeprivationButton">入力したユーザーのアクセスを剥奪</button>
     <br>
-    <button @click="publicAccessButton">public access button</button>
+    <button @click="publicAccessButton">データをパブリックアクセスにする</button>
     <br>
-    <button @click="publicAccessDeprivationButton">public access deprivation button</button>
+    <button @click="publicAccessDeprivationButton">データを非パブリックアクセスにする</button>
     <br>
 
 
