@@ -3,7 +3,7 @@
     桑原
     <button @click="startLogin">Login</button>
     <br>
-    <button @click="checkLogin">Check Login</button>
+    <button @click="checkLogin">Check Login 現在ログインできているか確認</button>
     <br>
     <input type="date" v-model="selectedDate">
     <br>
@@ -11,11 +11,19 @@
     <br>
 
     <textarea v-model="inputText" rows="4" cols="50"></textarea>
-    <button @click="handleButtonClick">Submit</button>
+    <button @click="handleButtonClick">Submit データを記入する</button>
   
     <br>
 
-    <button @click="readTodoList">Read Todo List</button>
+    <button @click="readTodoList">Read Todo List データを読み込む</button>
+
+    <br>
+    <textarea v-model="inputText2"></textarea>
+    <button @click="inputUserName">ユーザー名(アクセス許可を与えるユーザーも、データを読み込むユーザーもここで入力する)</button>
+
+    <button @click="readOtherUserData">他のユーザーのデータを読み込む</button>
+
+    
 
     <br>
     読み込んだデータはこちら
@@ -75,6 +83,7 @@ export default {
             selectedDate: null,  // 選択された日付を保持するデータプロパティ
             inputText: '',
             PodUrl: '',
+            userName: '',
 
         };
     },
@@ -98,8 +107,17 @@ export default {
                 });
             }
         },
+        async inputUserName() {
+            this.userName=this.inputText2;
+            console.log(this.userName);
+        },
+
         async handleButtonClick() {
             this.updateToDoList(this.inputText);
+        },
+
+        async readOtherUserData() {
+            this.getOtherUserData(this.userName);
         },
         // アクセス権の確認 データにアクセスできるかどうか
         async accessCheck() {
@@ -153,20 +171,23 @@ export default {
 
         //パブリックアクセス権をはく奪するボタン
         async publicAccessDeprivationButton() {
+            
             this.publicAccessDeprivation(this.PodUrl);
             console.log(this.PodUrl);
         },
+
+
 
 
         //アクセス権を与える関数
         async accessKuwa(resourceURL){
             universalAccess.setAgentAccess(
             resourceURL,         // Resource
-            "https://id.inrupt.com/kuwabarbara2",     // Agent
+            "https://id.inrupt.com/"+this.userName,     // Agent
             { read: true, write: false, },          // Access object
             { fetch: fetch }                         // fetch function from authenticated session
             ).then((newAccess) => {
-            this.logAccessInfo("https://id.inrupt.com/kuwabarbara2", newAccess, resourceURL)
+            this.logAccessInfo("https://id.inrupt.com/"+this.userName, newAccess, resourceURL)
             });
         },
         logAccessInfo(agent, agentAccess, resource) {
@@ -182,7 +203,7 @@ export default {
         async accessDeprivationKuwa(resourceURL){
             universalAccess.setAgentAccess(
             resourceURL,         // Resource
-            "https://id.inrupt.com/kuwabarbara2",     // Agent
+            "https://id.inrupt.com/"+this.userName,     // Agent
             { read: false, write: false, },          // Access object
             { fetch: fetch }                         // fetch function from authenticated session
             ).then((newAccess) => {
@@ -203,6 +224,40 @@ export default {
                     console.log("Returned Public Access:: ", JSON.stringify(newAccess));
                 }
                 });
+        },
+
+        //他のユーザーのデータを取得する関数
+        async getOtherUserData(userName){ //データを取得したいユーザーの名前を引数にとる
+            console.log(userName);
+
+            const pods=await getPodUrlAll("https://id.inrupt.com/"+userName,{ fetch: fetch });
+            console.log("ああああ");
+            console.log(pods);
+            console.log(this.selectedDate);
+            this.PodUrl=pods[0]+"KuwaSchedule/"+this.selectedDate+"/";
+
+            // Make authenticated requests by passing `fetch` to the solid-client functions.
+            // The user must have logged in as someone with the appropriate access to the specified URL.
+
+            // For example, the user must be someone with Read access to the specified URL.
+            const myDataset = await getSolidDataset(
+            //"https://storage.inrupt.com/somepod/todolist",
+            this.PodUrl,
+            { fetch: fetch }
+            );
+            //console.log(myDataset);
+
+            let items = getThingAll(myDataset);
+  
+            let listcontent = "";
+            for (let i = 0; i < items.length; i++) {
+                let item = getStringNoLocale(items[i], SCHEMA_INRUPT.name);
+                if (item !== null) {
+                listcontent += item + "\n";
+                }
+            }
+
+            console.log(listcontent);
         },
 
         //パブリックアクセス権をはく奪する関数
@@ -227,6 +282,7 @@ export default {
         },
         async readTodoList() {
             const pods=await getPodUrlAll(getDefaultSession().info.webId,{ fetch: fetch });
+            
             console.log(pods);
             console.log(this.selectedDate);
             this.PodUrl=pods[0]+"KuwaSchedule/"+this.selectedDate+"/";
