@@ -1,50 +1,80 @@
 <template>
-    <div>
-    <button @click="startLogin">ログインボタン</button>
-    <br>
-    <button @click="checkLogin">Check Login 現在ログインできているか確認</button>
-    <br>
-    <input type="date" v-model="selectedDate">
-    <br>
-    <p>選択された日付: {{ selectedDate }}</p>
-    <br>
+    <div class="container">
+        <button @click="startLogin" class="button">ログイン</button>
+        <button @click="checkLogin" class="button">ログイン状況を確認</button>
 
-    <textarea v-model="inputText" rows="4" cols="50"></textarea>
-    <button @click="handleButtonClick">予定を書き込む</button>
-  
-    <br>
+        <div class="input-group">
+            <label for="date">日付選択:</label>
+            <input type="date" id="date" v-model="selectedDate" class="input">
+        </div>
+        <p>選択された日付: {{ selectedDate }}</p>
 
-    <button @click="readTodoList">予定を読み込む</button>
+        <div class="input-group">
+            <textarea v-model="inputText" rows="4" class="textarea"></textarea>
+            <button @click="handleButtonClick" class="button">予定を追加</button>
+        </div>
 
-    <br>
-    <textarea v-model="inputText2"></textarea>
-    <button @click="inputUserName">ユーザー名を入力</button>
+        <button @click="readTodoList" class="button">予定を表示</button>
 
-    <button @click="readOtherUserData">入力した他のユーザーのデータを読み込む</button>
+        <div class="input-group">
+            <textarea v-model="inputText2" class="textarea"></textarea>
+            <button @click="inputUserName" class="button">ユーザー名入力</button>
+            <button @click="readOtherUserData" class="button">他ユーザーのデータを表示</button>
+        </div>
 
-    
+        <button @click="accessCheck" class="button">アクセス権確認</button>
+        <button @click="accessButton" class="button">アクセス権付与</button>
+        <button @click="accessDeprivationButton" class="button">アクセス権剥奪</button>
+        <button @click="publicAccessButton" class="button">パブリックアクセス設定</button>
+        <button @click="publicAccessDeprivationButton" class="button">パブリックアクセス解除</button>
 
-    <br>
-    読み込んだデータはこちら
-    <br>
-    {{ReadData}}
-    <br>
-    <br>
-    <button @click="accessCheck">データのアクセス情報を確認</button>
-    <br>
-    <button @click="accessButton">入力したユーザーにのみアクセスを付与</button>
-    <br>
-    <button @click="accessDeprivationButton">入力したユーザーのアクセスを剥奪</button>
-    <br>
-    <button @click="publicAccessButton">データをパブリックアクセスにする</button>
-    <br>
-    <button @click="publicAccessDeprivationButton">データを非パブリックアクセスにする</button>
-    <br>
-
-
+        <div>読み込んだデータ: {{ ReadData }}</div>
     </div>
 </template>
-  
+
+<style scoped>
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.button {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.input-group {
+    margin: 10px 0;
+}
+
+.input, .textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.textarea {
+    resize: vertical;
+}
+</style>
+
 
 
 <script>
