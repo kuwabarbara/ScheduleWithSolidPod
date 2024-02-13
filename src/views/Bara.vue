@@ -28,7 +28,8 @@
         <button @click="publicAccessButton" class="button">パブリックアクセス設定</button>
         <button @click="publicAccessDeprivationButton" class="button">パブリックアクセス解除</button>
 
-        <div>読み込んだデータ: {{ ReadData }}</div>
+        <div class="message">メッセージ: {{ message }}</div>
+
     </div>
 </template>
 
@@ -38,6 +39,16 @@
     margin: 0 auto;
     padding: 20px;
     font-family: 'Arial', sans-serif;
+}
+
+.message {
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #333;
+    background-color: #f5f5f5;
+    color: #333;
+    border-radius: 5px;
+    white-space: pre-wrap;
 }
 
 .button {
@@ -113,6 +124,7 @@ export default {
             inputText: '',
             PodUrl: '',
             userName: '',
+            message: '',
 
         };
     },
@@ -156,8 +168,11 @@ export default {
             ).then((returnedAccess) => {
             if (returnedAccess === null) {
                 console.log("Could not load access details for this Resource.");
+                this.message = "アクセス権を確認できませんでした";
             } else {
                 console.log("Returned Public Access:: ", JSON.stringify(returnedAccess));
+                this.message = "アクセス権を確認しました\n";
+                this.message += JSON.stringify(returnedAccess);
             }
             });
         },
@@ -171,9 +186,12 @@ export default {
                 console.log(pods);
                 console.log(this.selectedDate);
                 this.PodUrl=pods[0]+"KuwaSchedule/"+this.selectedDate+"/";
+
+                this.message = `Logged in as ${getDefaultSession().info.webId}`;
             }
             else{
                 console.log(`not login`);
+                this.message = `not login`;
             }
         },
 
@@ -217,7 +235,9 @@ export default {
             { fetch: fetch }                         // fetch function from authenticated session
             ).then((newAccess) => {
             this.logAccessInfo("https://id.inrupt.com/"+this.userName, newAccess, resourceURL)
+            this.message = this.userName + `にアクセス権を与えました`;
             });
+
         },
         logAccessInfo(agent, agentAccess, resource) {
             console.log(`For resource::: ${resource}`);
@@ -237,6 +257,7 @@ export default {
             { fetch: fetch }                         // fetch function from authenticated session
             ).then((newAccess) => {
                 console.log(`アクセス権をはく奪しました ${JSON.stringify(newAccess)}`);
+                this.message = this.userName + `のアクセス権をはく奪しました`;
             });
         },
 
@@ -251,6 +272,7 @@ export default {
                     console.log("Could not load access details for this Resource.");
                 } else {
                     console.log("Returned Public Access:: ", JSON.stringify(newAccess));
+                    this.message = `パブリックアクセス権を与えました`;
                 }
                 });
         },
@@ -287,6 +309,8 @@ export default {
             }
 
             console.log(listcontent);
+            this.message = userName + "のデータを取得しました\n";
+            this.message+=listcontent;
         },
 
         //パブリックアクセス権をはく奪する関数
@@ -300,6 +324,7 @@ export default {
                     console.log("Could not load access details for this Resource.");
                 } else {
                     console.log("Returned Public Access:: ", JSON.stringify(newAccess));
+                    this.message = `パブリックアクセス権をはく奪しました`;
                 }
                 });
         },
@@ -338,6 +363,8 @@ export default {
             }
 
             console.log(listcontent);
+            this.message = "データを取得しました\n";
+            this.message+=listcontent;
 
             //this.ReadData = myDataset;
         },
