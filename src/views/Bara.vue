@@ -10,14 +10,14 @@
         <p>選択された日付: {{ selectedDate }}</p>
 
         <div class="input-group">
-            <textarea v-model="inputText" rows="4" class="textarea"></textarea>
+            <textarea v-model="inputText" rows="4" class="textarea" placeholder="日付を選択した後に、ここに予定を書き込んでね"></textarea>
             <button @click="handleButtonClick" class="button">予定を追加</button>
         </div>
 
         <button @click="readTodoList" class="button">予定を表示</button>
 
         <div class="input-group">
-            <textarea v-model="inputText2" class="textarea"></textarea>
+            <textarea v-model="inputText2" class="textarea"  placeholder="その日の予定を共有したいユーザー名や、予定をみたいユーザー名を書いてね"></textarea>
             <button @click="inputUserName" class="button">ユーザー名入力</button>
             <button @click="readOtherUserData" class="button">他ユーザーのデータを表示</button>
         </div>
