@@ -20,6 +20,9 @@
             <textarea v-model="inputText2" class="textarea"  placeholder="その日の予定を共有したいユーザー名や、予定をみたいユーザー名を書いてね"></textarea>
             <button @click="inputUserName" class="button">ユーザー名入力</button>
             <button @click="readOtherUserData" class="button">他ユーザーのデータを表示</button>
+
+            <button @click="addFriend" class="button">友達を追加</button>
+            <button @click="readFriendList" class="button">友達リストを表示</button>
         </div>
 
         <button @click="accessCheck" class="button">アクセス権確認</button>
@@ -368,6 +371,8 @@ export default {
 
             //this.ReadData = myDataset;
         },
+        
+        //予定を追加する関数
         async updateToDoList(myChangedDataset) {
             const pods=await getPodUrlAll(getDefaultSession().info.webId,{ fetch: fetch });
             console.log(pods);
@@ -428,7 +433,100 @@ export default {
             } catch (error) {
             console.log(error);
             }
-        }
+        },
+
+
+        //友達を追加する関数
+        async addFriend() {
+            const pods=await getPodUrlAll(getDefaultSession().info.webId,{ fetch: fetch });
+            console.log(pods);
+            console.log(this.selectedDate);
+            this.PodUrl=pods[0]+"KuwaSchedule/"+"FriendList"+"/";
+
+            const readingListUrl = this.PodUrl;
+
+            console.log(readingListUrl);
+
+        
+            let titles = this.inputText2.split("\n");
+        
+            // Fetch or create a new reading list.
+            let myReadingList;
+        
+            try {
+            // Attempt to retrieve the reading list in case it already exists.
+            myReadingList = await getSolidDataset(readingListUrl, { fetch: fetch });
+            // Clear the list to override the whole list
+            let items = getThingAll(myReadingList);
+            items.forEach((item) => {
+                myReadingList = removeThing(myReadingList, item);
+            });
+            } catch (error) {
+            if (typeof error.statusCode === "number" && error.statusCode === 404) {
+                // if not found, create a new SolidDataset (i.e., the reading list)
+                myReadingList = createSolidDataset();
+            } else {
+                console.error(error.message);
+            }
+            }
+        
+            // Add titles to the Dataset
+            let i = 0;
+            titles.forEach((title) => {
+            if (title.trim() !== "") {
+                let item = createThing({ name: "title" + i });
+                item = addUrl(item, RDF.type, AS.Article);
+                item = addStringNoLocale(item, SCHEMA_INRUPT.name, title);
+                myReadingList = setThing(myReadingList, item);
+                i++;
+            }
+            });
+        
+            try {
+            // Save the SolidDataset
+            let savedReadingList = await saveSolidDatasetAt(
+                readingListUrl,
+                myReadingList,
+                { fetch: fetch }
+            );
+        
+            console.log(savedReadingList);
+    
+            } catch (error) {
+            console.log(error);
+            }
+        },
+        async readFriendList() {
+            const pods=await getPodUrlAll(getDefaultSession().info.webId,{ fetch: fetch });
+            
+            console.log(pods);
+            console.log(this.selectedDate);
+            this.PodUrl=pods[0]+"KuwaSchedule/"+"FriendList"+"/";
+
+            // For example, the user must be someone with Read access to the specified URL.
+            const myDataset = await getSolidDataset(
+            //"https://storage.inrupt.com/somepod/todolist",
+            this.PodUrl,
+            { fetch: fetch }
+            );
+            //console.log(myDataset);
+
+            let items = getThingAll(myDataset);
+  
+            let listcontent = "";
+            for (let i = 0; i < items.length; i++) {
+                let item = getStringNoLocale(items[i], SCHEMA_INRUPT.name);
+                if (item !== null) {
+                listcontent += item + "\n";
+                }
+            }
+
+            console.log(listcontent);
+            this.message = "友達リストを取得しました\n";
+            this.message+=listcontent;
+
+            //this.ReadData = myDataset;
+        },
 
 
 
